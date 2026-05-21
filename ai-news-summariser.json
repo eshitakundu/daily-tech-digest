@@ -1,0 +1,94 @@
+{
+  "nodes": [
+    {
+      "id": "node_1779398225208_pr4relqv0",
+      "type": "llm",
+      "position": {
+        "x": 360,
+        "y": 150
+      },
+      "data": {
+        "label": "llm",
+        "model": "openrouter/free",
+        "temperature": 0.7,
+        "systemInstruction": "You are a news summariser. Given a list of news stories, extract the top 5 titles and write a concise one-line summary for each. Format your response exactly like this, with a blank line between each item:\n\n1. Title\nSummary here.\n\n2. Title\nSummary here.",
+        "userMessage": "$httpRequest.body",
+        "batchModeEnabled": false,
+        "jsonOutputEnabled": false,
+        "jsonOutputSchema": "",
+        "credentialId": "887f6d19-0f95-4e07-82d0-67136fb3b4cb",
+        "isReasoningModel": false,
+        "fallbackCredentialId": "",
+        "fallbackModel": "",
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1779398229690_ed055oy31",
+      "type": "http",
+      "position": {
+        "x": 150,
+        "y": 150
+      },
+      "data": {
+        "label": "httpRequest",
+        "curl": "curl -X GET https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10",
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1779398585341_lm4z6aoal",
+      "type": "cron",
+      "position": {
+        "x": -60,
+        "y": 150
+      },
+      "data": {
+        "label": "cron",
+        "cronExpression": "0 8 * * *",
+        "status": "success"
+      }
+    },
+    {
+      "id": "node_1779398670993_a5ij05fvq",
+      "type": "sendEmail",
+      "position": {
+        "x": 660,
+        "y": 150
+      },
+      "data": {
+        "label": "sendEmail",
+        "credentialId": "b4d24ceb-a938-4839-8ce5-2d04dc4d3973",
+        "to": "eshita.kundu.2026@gmail.com",
+        "subject": "Daily Tech News Summary",
+        "emailBody": "$llm.text",
+        "status": "success",
+        "retryEnabled": true,
+        "retryWaitSeconds": 30
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge_node_1779398585341_lm4z6aoal_node_1779398229690_ed055oy31_1779398633270",
+      "source": "node_1779398585341_lm4z6aoal",
+      "target": "node_1779398229690_ed055oy31",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1779398229690_ed055oy31_node_1779398225208_pr4relqv0_1779398636924",
+      "source": "node_1779398229690_ed055oy31",
+      "target": "node_1779398225208_pr4relqv0",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    },
+    {
+      "id": "edge_node_1779398225208_pr4relqv0_node_1779398670993_a5ij05fvq_1779398674992",
+      "source": "node_1779398225208_pr4relqv0",
+      "target": "node_1779398670993_a5ij05fvq",
+      "sourceHandle": "output",
+      "targetHandle": "input"
+    }
+  ]
+}
